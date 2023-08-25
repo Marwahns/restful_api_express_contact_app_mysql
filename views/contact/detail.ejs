@@ -1,0 +1,37 @@
+<div class="container mt-3">
+  <div class="row">
+    <div class="col-md-8">
+      <h2>Detail Contact</h2>
+
+      <% if (!contact) { %>
+        <div class="alert alert-danger fw-bold" role="alert">
+          Data Contact is nothing
+          <a href="/contacts" class="alert-link fw-normal"><br />&laquo; Back</a>
+        </div>
+        <% } else { %>
+          <div class="card" style="width: 18rem">
+            <div class="card-body">
+              <h5 class="card-title">
+                <%= contact.name %>
+              </h5>
+              <h6 class="card-subtitle mb-2 text-muted">
+                <%= contact.noHP %>
+              </h6>
+              <p class="card-text">
+                <%= contact.email %>
+              </p>
+              <a href="/contact/edit/<%= contact.id %>" class="btn btn-info badge">ubah</a>
+
+              <form id="deleteForm" onsubmit="processDelete()">
+                <input type="hidden" name="_method" value="DELETE" />
+                <input type="hidden" name="id" id="id" value="<%= contact.id %>">
+                <button type="submit" class="btn btn-danger badge">hapus</button>
+              </form>
+
+              <a href="/contacts" class="card-link d-block mt-3">&laquo; Back</a>
+            </div>
+          </div>
+          <% } %>
+    </div>
+  </div>
+</div>

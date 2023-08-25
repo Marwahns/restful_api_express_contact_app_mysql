@@ -1,0 +1,34 @@
+<div class="container mt-3">
+  <div class="row">
+    <div class="col-md-6"></div>
+    <h2>Form Ubah Data Contact</h2>
+
+    <% if (typeof error !='undefined' ) { %>
+      <div class="alert alert-danger" role="alert">
+        <p>
+          <%= error %>
+        </p>
+      </div>
+      <% } %>
+
+        <form id="updateForm" onsubmit="processUpdate()">
+          <input type="hidden" name="_method" value="PUT" />
+          <input type="hidden" name="id" id="id" value="<%= contact.id %>" />
+
+          <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name" required value="<%= contact.name %>" />
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required value="<%= contact.email %>" />
+          </div>
+          <div class="mb-3">
+            <label for="noHP" class="form-label">Nomor Handphone</label>
+            <input type="text" class="form-control" id="noHP" name="noHP" required value="<%= contact.noHP %>" />
+          </div>
+
+          <button type="submit" class="btn btn-primary">Ubah Data Contact</button>
+        </form>
+  </div>
+</div>

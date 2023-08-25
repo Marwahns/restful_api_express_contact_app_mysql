@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <%- include('header') %>
+
+    <title><%= title %></title>
+  </head>
+
+  <body>
+    <!-- for include must use <%- %> -->
+    <%- include('nav') %>
+
+    <div class="container"><%- body %></div>
+
+    <%- include('footer') %>
+  </body>
+</html>

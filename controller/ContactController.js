@@ -104,24 +104,44 @@ const checkDuplicateUpdateContact = (email, noHP, excludedId) => {
 // };
 const getAllContacts = (req, res) => {
     const query = "SELECT * FROM contacts";
-    connection.query(query, (err, results) => {
-        if (err) {
-            // res.status(500).json({ error: 'Failed to fetch contacts' });
-            console.error("Error fetching contacts:", err);
+    const countContactQuery = "SELECT COUNT(name) AS contactCount FROM contacts";
+
+    // Fetch the count of contacts
+    connection.query(countContactQuery, (countErr, countResults) => {
+        if (countErr) {
+            console.error("Error fetching contact count:", countErr);
             req.flash("msg", "Terjadi kesalahan saat mengambil data kontak.");
             res.render("contact/contact", {
                 layout: "layouts/base",
                 title: "Halaman Contact",
                 contacts: [],
+                countContact: 0, // Set a default count value
                 msg: req.flash("msg"),
             });
         } else {
-            // res.status(200).json(results);
-            res.render("contact/contact", {
-                layout: "layouts/base",
-                title: "Halaman Contact",
-                contacts: results, // Assign the query results to 'contacts'
-                msg: req.flash("msg"),
+            const countContact = countResults[0].contactCount;
+
+            // Fetch all contacts
+            connection.query(query, (err, results) => {
+                if (err) {
+                    console.error("Error fetching contacts:", err);
+                    req.flash("msg", "Terjadi kesalahan saat mengambil data kontak.");
+                    res.render("contact/contact", {
+                        layout: "layouts/base",
+                        title: "Halaman Contact",
+                        contacts: [],
+                        countContact,
+                        msg: req.flash("msg"),
+                    });
+                } else {
+                    res.render("contact/contact", {
+                        layout: "layouts/base",
+                        title: "Halaman Contact",
+                        contacts: results,
+                        countContact,
+                        msg: req.flash("msg"),
+                    });
+                }
             });
         }
     });
@@ -184,12 +204,14 @@ const createContact = async (req, res) => {
             } else {
                 req.flash("msg", "Data contact berhasil ditambahkan!");
             }
-            res.redirect("/contacts");
+            // res.redirect("/contacts");
+            res.redirect("/");
         });
     } catch (error) {
         console.error("Error checking duplicate contacts:", error);
         req.flash("msg", "Terjadi kesalahan saat memeriksa data duplikat.");
-        res.redirect("/contacts");
+        // res.redirect("/contacts");
+        res.redirect("/");
     }
 };
 
@@ -205,7 +227,8 @@ const getContactById = (req, res) => {
                 "msg",
                 "Terjadi kesalahan saat mengambil data kontak untuk diedit."
             );
-            res.redirect("/contacts");
+            // res.redirect("/contacts");
+            res.redirect("/");
         } else {
             res.render("contact/edit-contact", {
                 title: "Form Ubah Data Contact",
@@ -255,7 +278,7 @@ const updateContact = (req, res) => {
                         // Duplicate email or noHP found
                         // res.status(400).json({ error: "Duplicate email or noHP" });
                         console.log('masuk')
-                        req.flash( "error", "Data kontak dengan email atau nomor HP yang sama sudah ada.");
+                        req.flash("error", "Data kontak dengan email atau nomor HP yang sama sudah ada.");
 
                         res.render(`contact/edit-contact/${contactId}`, {
                             title: "Form Edit Data Contact",
@@ -270,10 +293,15 @@ const updateContact = (req, res) => {
                             if (err) {
                                 res.status(500).json({ error: "Failed to update contact" });
                             } else {
+                                req.flash("msg", "Contact updated successfully");
                                 res
                                     .status(200)
-                                    .json({ message: "Contact updated successfully" });
-
+                                    .json({ message: "Contact updated successfully" })
+                                    .render("contact/detail", {
+                                        layout: "layouts/base",
+                                        title: "Halaman Detail Contact",
+                                        msg: req.flash("msg"),
+                                    });
                             }
                         }
                         );
@@ -286,26 +314,58 @@ const updateContact = (req, res) => {
     } catch (error) {
         console.error("Error checking duplicate contacts:", error);
         req.flash("msg", "Terjadi kesalahan saat memeriksa data duplikat.");
-        res.redirect("/contacts");
+        // res.redirect("/contacts");
+        res.redirect("/");
     }
 };
 
 // proses delete data contact
 const deleteContact = (req, res) => {
     const contactId = req.params.id;
+    console.log(req.params);
     const query = "DELETE FROM contacts WHERE id = ?";
     connection.query(query, [contactId], (err, result) => {
         if (err) {
-            res.status(500).json({ error: "Failed to delete contact" });
             console.error("Error deleting contact:", err);
-            // req.flash('msg', 'Terjadi kesalahan saat menghapus data kontak.');
+            req.flash('msg', 'Terjadi kesalahan saat menghapus data kontak.');
+            res.redirect('/contacts');
         } else {
-            res.status(200).json({ message: "Contact deleted successfully" });
-            // req.flash('msg', 'Data contact berhasil dihapus!');
+            req.flash('msg', 'Data contact berhasil dihapus!');
+            res.redirect('/contacts');
+        }
+    });
+};
+
+const deleteMultipleContact = (req, res) => {
+    // const contactIds = (req.params.ids);
+    const contactIds = [req.params.ids];
+    // const splitContactIds = contactIds.split(','); // Split the string by comma
+
+    // Filter out the -1 IDs if present
+    // const filteredIds = splitContactIds.filter(id => id !== '-1');
+    // console.log(filteredIds);
+
+    if (!Array.isArray(contactIds) || contactIds.length === 0) {
+        req.flash('msg', 'No contacts selected for deletion.');
+        res.redirect('/contacts');
+        return;
+    }
+
+    const query = `DELETE FROM contacts WHERE id IN (${contactIds})`;
+    connection.query(query, [contactIds], (err, result) => {
+        console.log(query);
+        if (err) {
+            console.error("Error deleting contacts:", err);
+            req.flash('msg', 'An error occurred while deleting contacts.');
+            res.redirect('/contacts');
+        } else {
+            const deletedCount = result.affectedRows || 0;
+            req.flash('msg', `${deletedCount} contacts successfully deleted.`);
+            res.redirect('/contacts');
         }
         // res.redirect('/contacts');
     });
-};
+}
 
 // halaman detail data contact
 const getDetailContactById = (req, res) => {
@@ -342,6 +402,7 @@ const getDetailContactById = (req, res) => {
     });
 };
 
+
 module.exports = {
     validateContact,
     validateUpdateContact,
@@ -351,4 +412,5 @@ module.exports = {
     updateContact,
     deleteContact,
     getDetailContactById,
+    deleteMultipleContact,
 };

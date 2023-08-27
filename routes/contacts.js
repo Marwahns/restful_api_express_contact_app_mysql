@@ -31,7 +31,7 @@ const contactController = require('../controller/ContactController');
 //     });
 // });
 
-router.get('/contacts', contactController.getAllContacts);
+router.get('/', contactController.getAllContacts);
 
 /* GET Add contacts page. */
 router.get('/contact/add', function (req, res) {
@@ -153,6 +153,23 @@ router.put('/contact/:id', contactController.updateContact);
 
 /* Process Delete contacts */
 router.delete('/contact/:id', contactController.deleteContact);
+
+/* Process Multiple Delete contacts */
+router.delete('/contacts/delete/:ids', contactController.deleteMultipleContact);
+
+router.post('/sort', (req, res) => {
+    const sortBy = req.body.sortBy || 'name'; // Default to sorting by name
+    const query = `SELECT * FROM name ORDER BY name ASC`;
+
+    connection.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching sorted data:', err);
+            res.status(500).json({ error: 'Failed to fetch sorted data' });
+        } else {
+            res.json(results);
+        }
+    });
+});
 
 /* GET detail contacts page */
 // router.get('/contact/:id', function (req, res) {

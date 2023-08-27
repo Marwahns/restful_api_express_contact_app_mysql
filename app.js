@@ -13,9 +13,9 @@ const flash = require('connect-flash')
 const methodOverride = require('method-override');
 
 // Route
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-const aboutRouter = require('./routes/about');
+// var indexRouter = require('./routes/index');
+// var usersRouter = require('./routes/users');
+// const aboutRouter = require('./routes/about');
 const contactsRouter = require('./routes/contacts');
 
 var app = express();
@@ -48,9 +48,9 @@ app.use(session({
 }))
 app.use(flash())
 
-app.use(indexRouter);
+// app.use(indexRouter);
 // app.use('/users', usersRouter);
-app.use(aboutRouter);
+// app.use(aboutRouter);
 app.use(contactsRouter);
 
 // catch 404 and forward to error handler

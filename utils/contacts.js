@@ -58,13 +58,13 @@ const addContact = (contact) => {
 
 // Cek email yang duplikat
 const cekDuplikat = (email) => {
-    const contacts = loadContacts()
+    const contacts = loadContactsFromDB()
     return contacts.find((contact) => contact.email === email)
 }
 
 // Cek nomor handphone yang duplikat
 const cekUniqueHp = (noHP) => {
-    const contacts = loadContacts()
+    const contacts = loadContactsFromDB()
     return contacts.find((contact) => contact.noHP === noHP)
 }
 

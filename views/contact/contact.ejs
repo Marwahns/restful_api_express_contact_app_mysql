@@ -1,50 +1,132 @@
 <div class="container mt-3">
   <div class="row">
     <div class="col-md-8">
-      <h2>Daftar Contact</h2>
+      <div>
+        <h2>Contacts</h2>
+      </div>
 
-      <a href="/contact/add" class="btn btn-primary mb-2"
-        >Tambah Data Contact</a
-      >
+      <div class="input-group mt-2 mb-3">
+        <div class="form-outline">
+          <input type="search" id="form1" class="form-control" placeholder="Search" />
+        </div>
+        <button type="button" class="btn btn-primary">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
 
-      <% if (msg.length !==0) { %>
-      <div class="alert alert-success" role="alert"><%= msg %></div>
-      <% } %>
+      <div class="my-4">
+        <div class="d-flex float-left">
+          <a href="/contact/add" class="btn btn-primary mb-3"><i class="fas fa-plus"></i></a>
 
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Nama</th>
-            <th scope="col">Nomor Handphone</th>
-            <th scope="col">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% if (contacts.length===0) { %>
-          <tr>
-            <td colspan="4">
-              <div class="alert alert-danger fw-bold" role="alert">
-                Tidak ada data contact
+          <div id="trash" class="d-none mx-1">
+            <form id="deleteContactsForm" onsubmit="processDeleteMultiple()">
+              <input type="hidden" name="_method" value="DELETE" />
+              <button type="submit" id="deleteContactsButton" class="btn btn-danger">
+                <i class="fas fad fa-trash"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <a href="#" class="btn btn-success float-right">Export</a>
+      </div>
+
+      <% if (typeof msg !='undefined' && msg.length !==0) { %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <%= msg %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <% } %>
+
+          <table class="table table-hover">
+            <thead class="table-dark">
+              <tr>
+                <% if (contacts.length !==0) { %>
+                  <th scope="col">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" data-id="-1" />
+                    </div>
+                  </th>
+                  <% } %>
+                    <th scope="col">#</th>
+                    <th scope="col" id="sortButton">
+                      Name <i id="iconSort" class="fas fa-caret-down"></i>
+                    </th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (contacts.length===0) { %>
+                <tr>
+                  <td colspan="5">
+                    <div class="alert alert-danger fw-bold" role="alert-nothing">
+                      There is no contact data
+                    </div>
+                  </td>
+                </tr>
+                <% } %>
+                  <% contacts.forEach((contact, index )=> { index++ %>
+                    <tr class="row-data">
+                      <th scope="row">
+                        <div class="form-check">
+                          <input class="form-check-input check-input" type="checkbox" value=""
+                            data-id="<%= contact.id %>" data-name="<%= contact.name %>" data-phone="<%= contact.noHP %>"
+                            data-email="<%= contact.email %>" />
+                        </div>
+                      </th>
+                      <th>
+                        <%= index++ %>
+                      </th>
+                      <td>
+                        <%= contact.name %>
+                      </td>
+                      <td>
+                        <%= contact.noHP %>
+                      </td>
+                      <td>
+                        <a href="/contact/<%= contact.id %>" class="btn btn-success badge rounded-pill"><i
+                            class="bi bi-info-circle"></i> Detail</a>
+                      </td>
+                    </tr>
+                    <% }) %>
+            </tbody>
+          </table>
+
+          <!-- Modal -->
+          <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                  <button type="button" class="close close-modal" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div>
+                    <div class="card-body">
+                      <h5 class="contact-name"></h5>
+                      <h6 class="mb-2 text-muted contact-phone"></h6>
+                      <p class="contact-email"></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <div class="d-flex">
+                    <a class="btn btn-info contact-update">Change</a>
+
+                    <form id="deleteForm" onsubmit="processDelete()">
+                      <input type="hidden" name="_method" value="DELETE" />
+                      <input type="hidden" name="id" id="id" class="contact-id" value="" />
+                      <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                  </div>
+                </div>
               </div>
-            </td>
-          </tr>
-          <% } %> <% contacts.forEach((contact, index )=> { index++ %>
-          <tr>
-            <th scope="row"><%= index++ %></th>
-            <td><%= contact.name %></td>
-            <td><%= contact.noHP %></td>
-            <td>
-              <a
-                href="/contact/<%= contact.id %>"
-                class="btn btn-success badge rounded-pill"
-                ><i class="bi bi-info-circle"></i> Detail</a
-              >
-            </td>
-          </tr>
-          <% }) %>
-        </tbody>
-      </table>
+            </div>
+          </div>
     </div>
   </div>
 </div>

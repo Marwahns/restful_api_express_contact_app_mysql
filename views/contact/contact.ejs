@@ -28,7 +28,8 @@
           </div>
         </div>
 
-        <a href="#" class="btn btn-success float-right">Export</a>
+        <!-- <button id="exportButton" class="btn btn-success float-right">Export</button> -->
+        <a href="/export-data" class="btn btn-success mb-3 float-right">Export</a>
       </div>
 
       <% if (typeof msg !='undefined' && msg.length !==0) { %>
@@ -53,13 +54,12 @@
                       Name <i id="iconSort" class="fas fa-caret-down"></i>
                     </th>
                     <th scope="col">Phone</th>
-                    <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
               <% if (contacts.length===0) { %>
                 <tr>
-                  <td colspan="5">
+                  <td colspan="4">
                     <div class="alert alert-danger fw-bold" role="alert-nothing">
                       There is no contact data
                     </div>
@@ -84,10 +84,10 @@
                       <td>
                         <%= contact.noHP %>
                       </td>
-                      <td>
+                      <!-- <td>
                         <a href="/contact/<%= contact.id %>" class="btn btn-success badge rounded-pill"><i
                             class="bi bi-info-circle"></i> Detail</a>
-                      </td>
+                      </td> -->
                     </tr>
                     <% }) %>
             </tbody>
@@ -113,10 +113,12 @@
                     </div>
                   </div>
                 </div>
-                <div class="modal-footer">
-                  <div class="d-flex">
+                <div class="modal-footer d-flex">
+                  <div class="float-left">
                     <a class="btn btn-info contact-update">Change</a>
+                  </div>
 
+                  <div class="float-right">
                     <form id="deleteForm" onsubmit="processDelete()">
                       <input type="hidden" name="_method" value="DELETE" />
                       <input type="hidden" name="id" id="id" class="contact-id" value="" />

@@ -244,6 +244,7 @@ function RowData() {
   });
 }
 
+// Modal
 function openModal(contactId, contactName, contactPhone, contactEmail) {
   // Get a reference to the modal
   const modal = document.getElementById("exampleModal");
@@ -273,6 +274,38 @@ function openModal(contactId, contactName, contactPhone, contactEmail) {
     $(modal).modal("hide");
   });
 }
+
+// document.getElementById("exportButton").addEventListener("click", function() {
+//   // Ambil tabel berdasarkan kelas atau ID
+//   var table = document.querySelector(".table");
+
+//   // Ambil semua baris data dari tabel
+//   var rows = table.querySelectorAll("tbody tr");
+
+//   // Buat array untuk menyimpan data yang akan diimpor ke Excel
+//   var data = [];
+
+//   // Loop melalui setiap baris data
+//   rows.forEach(function(row) {
+//     var rowData = [];
+//     var cells = row.querySelectorAll("td");
+
+//     // Loop melalui sel setiap baris untuk mendapatkan teksnya
+//     cells.forEach(function(cell) {
+//       rowData.push(cell.textContent.trim());
+//     });
+
+//     data.push(rowData);
+//   });
+
+//   // Buat workbook baru dari data
+//   var wb = XLSX.utils.book_new();
+//   var ws = XLSX.utils.aoa_to_sheet(data);
+//   XLSX.utils.book_append_sheet(wb, ws, "Contacts");
+
+//   // Simpan workbook sebagai file Excel
+//   XLSX.writeFile(wb, "contacts.xlsx");
+// });
 
 // Load function
 sortName();

@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const flash = require("connect-flash");
 const session = require("express-session");
 const app = express();
+const ExcelJS = require('exceljs');
 
 // Konfigurasi flash
 app.use(cookieParser("secret")); // res.cookie('cookieName', 'cookieValue', { secure: true });
@@ -367,6 +368,63 @@ const deleteMultipleContact = (req, res) => {
     });
 }
 
+const sortByNameAscending = (req, res) => {
+    const sortBy = req.body.sortBy || 'name'; // Default to sorting by name
+    const query = `SELECT * FROM contacts ORDER BY ${sortBy} ASC`;
+
+    connection.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching sorted data:', err);
+            res.status(500).json({ error: 'Failed to fetch sorted data' });
+        } else {
+            res.json(results);
+        }
+    });
+}
+
+// proses export data
+const exportContacts = (req, res) => {
+    connection.query('SELECT * FROM contacts', (error, results) => {
+        if (error) {
+            console.error('Error fetching data:', error);
+            res.status(500).send('Error fetching data');
+            return;
+        }
+
+        // Create a new Excel workbook
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Data');
+
+        // Add data to the worksheet
+        worksheet.columns = [
+            { header: 'Name', key: 'name', width: 15 },
+            { header: 'Phone', key: 'noHP', width: 15 },
+            { header: 'Email', key: 'email', width: 15 },
+        ];
+
+        results.forEach(row => {
+            worksheet.addRow(row);
+        });
+
+        // Generate a filename with the current date, month, and year
+        const currentDate = new Date();
+        const filename = `contacts_${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)}-${currentDate.getDate()}.xlsx`;
+
+        // Generate Excel file
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
+
+        workbook.xlsx.write(res)
+            .then(() => {
+                res.end();
+            })
+            .catch(err => {
+                console.error('Error generating Excel:', err);
+                res.status(500).send('Error generating Excel');
+            });
+    });
+}
+
 // halaman detail data contact
 const getDetailContactById = (req, res) => {
     const contactId = req.params.id;
@@ -411,6 +469,8 @@ module.exports = {
     getContactById,
     updateContact,
     deleteContact,
-    getDetailContactById,
     deleteMultipleContact,
+    sortByNameAscending,
+    exportContacts,
+    getDetailContactById,
 };

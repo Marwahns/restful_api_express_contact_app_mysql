@@ -157,19 +157,10 @@ router.delete('/contact/:id', contactController.deleteContact);
 /* Process Multiple Delete contacts */
 router.delete('/contacts/delete/:ids', contactController.deleteMultipleContact);
 
-router.post('/sort', (req, res) => {
-    const sortBy = req.body.sortBy || 'name'; // Default to sorting by name
-    const query = `SELECT * FROM name ORDER BY name ASC`;
+router.get('/sort', contactController.sortByNameAscending);
 
-    connection.query(query, (err, results) => {
-        if (err) {
-            console.error('Error fetching sorted data:', err);
-            res.status(500).json({ error: 'Failed to fetch sorted data' });
-        } else {
-            res.json(results);
-        }
-    });
-});
+/* Process exporting data */
+router.get('/export-data', contactController.exportContacts);
 
 /* GET detail contacts page */
 // router.get('/contact/:id', function (req, res) {

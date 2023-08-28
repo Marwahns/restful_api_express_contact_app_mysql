@@ -1,7 +1,7 @@
 <div class="container mt-3">
   <div class="row">
     <div class="col-md-6"></div>
-    <h2>Form Tambah Data Contact</h2>
+    <h2>Add New Contact Data</h2>
 
     <!-- <% if (typeof errors !='undefined' ) { %>
     <div class="alert alert-danger" role="alert">
@@ -14,44 +14,29 @@
     <% } %> -->
 
     <% if (typeof errors !='undefined' ) { %>
-    <div class="alert alert-danger" role="alert">
-      <p><%= errors %></p>
-    </div>
-    <% } %>
+      <div class="alert alert-danger" role="alert">
+        <p>
+          <%= errors %>
+        </p>
+      </div>
+      <% } %>
 
-    <form method="post" action="/contacts">
-      <div class="mb-3">
-        <label for="name" class="form-label">Name</label>
-        <input
-          type="text"
-          class="form-control"
-          id="name"
-          name="name"
-          required
-        />
-      </div>
-      <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input
-          type="email"
-          class="form-control"
-          id="email"
-          name="email"
-          required
-        />
-      </div>
-      <div class="mb-3">
-        <label for="noHP" class="form-label">Nomor Handphone</label>
-        <input
-          type="text"
-          class="form-control"
-          id="noHP"
-          name="noHP"
-          required
-        />
-      </div>
+        <form method="post" action="/contacts">
+          <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="name" required />
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required />
+          </div>
+          <div class="mb-3">
+            <label for="noHP" class="form-label">Phone Number</label>
+            <input type="text" class="form-control" id="noHP" name="noHP" required />
+          </div>
 
-      <button type="submit" class="btn btn-primary">Tambah Data Contact</button>
-    </form>
+          <button type="reset" class="btn btn-warning float-right">Clear</button>
+          <button type="submit" class="btn btn-primary float-left">Save</button>
+        </form>
   </div>
 </div>
